@@ -1,5 +1,10 @@
 We are making a shooting gallery for use at a christmas faire
 
+Requires:
+  https://github.com/lupeke/python-firmata
+  Arduino loaded with the example sketch 'Firmata -> OldStandardFirmata' on /dev/ttyUSB0
+  Hardware specs and wiring diagram to come
+  
 
 The sounds are all off freesound
 

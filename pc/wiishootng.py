@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import pygame
-
+import random
 
 pygame.init()
 gunshot = pygame.mixer.Sound('84254__tito-lahaye__45-smith-wesson.wav')
@@ -15,6 +15,7 @@ ymargin = 70
 #gunshot = pyglet.resource.media('84254__tito-lahaye__45-smith-wesson.wav', streaming=False)
 
 bullet_time = 0.25
+shake_time = 0.1
 maxshots = 6
 maxpoints = 4
 maxtime = 60
@@ -28,6 +29,26 @@ from time import sleep
 from array import array
 import socket
 import time
+
+from firmata import * 
+
+
+LEDpins = [13, 2]
+
+MOTORpins = [11, 12]
+
+
+a = Arduino('/dev/ttyUSB0')
+
+targets = len(LEDpins)
+
+for v in LEDpins:
+    a.pin_mode(v, firmata.OUTPUT)
+    a.digital_write(v, firmata.LOW)
+
+for v in MOTORpins:
+    a.pin_mode(v, firmata.OUTPUT)
+    a.digital_write(v, firmata.LOW)
 
 
 print 'Put Wiimote in discoverable mode now (press 1+2)...'
@@ -51,6 +72,16 @@ while 1:
     shots = 0
     skill = 1
     
+    lasttarget = targets
+    target = 0
+    targetmaxtime = 10
+    targetstarttime = 0
+    changetarget = 1
+    
+    #a.digital_write(LEDpins[lasttarget], firmata.LOW)
+    #a.digital_write(LEDpins[target], firmata.HIGH)
+    
+    
     # If nunchuk is active then dump the values.
     #if not w.state.has_key('nunchuk'):
     #  print "No nunchuk."
@@ -64,10 +95,26 @@ while 1:
     startnoise.play()
     
     starttime = time.clock()
-    
+    targetstarttime = starttime
     
     while (shots < maxshots) & (points < maxpoints) & ((starttime + maxtime) > time.clock()):
       
+        if (targetstarttime + targetmaxtime) <= time.clock():
+            missednoise.play()
+            changetarget = 1
+            
+        if changetarget:    
+            targetstarttime = time.clock()
+            changetarget = 0
+            lasttarget = target
+            while lasttarget == target:
+                target = random.randint(0, targets - 1)
+            
+            a.digital_write(LEDpins[lasttarget], firmata.LOW)
+            a.digital_write(LEDpins[target], firmata.HIGH)
+            
+        
+        
         if w.state['nunchuk']['buttons']:
             gunshot.play()
     
@@ -90,7 +137,13 @@ while 1:
                                 sleep( bullet_time )       
                                 hit.play()
                                 points = points + 1
-                        
+                                
+                                a.digital_write(MOTORpins[target], firmata.HIGH)
+                                sleep( shake_time )    
+                                a.digital_write(MOTORpins[target], firmata.LOW)
+                                changetarget = 1
+            
+                                
                                 if points == 1:
                                     w.led = cwiid.LED1_ON
                                 if points == 2:
@@ -99,6 +152,8 @@ while 1:
                                     w.led = cwiid.LED3_ON
                                 if points == 4:
                                     w.led = cwiid.LED4_ON
+                                    
+                                    
                                 
                 
             shots = shots + 1
@@ -110,6 +165,7 @@ while 1:
             sleep( 1 )
     
     print 'Scored {0} out of {1} shots at skill {2}'.format(points, shots, skill)
+    a.digital_write(LEDpins[target], firmata.LOW)
     
     if (points > 0):          
         congratsnoise.play()
