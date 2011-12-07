@@ -2,10 +2,9 @@ We are making a shooting gallery for use at a christmas faire.
 
 this is an access-space.org project
 
-The structure will be made from old PC cases and recovered 2x2 wood. The Mechanics and lighting (including 
+The structure will be made from recovered 2x2 wood. The Mechanics and lighting (including 
 the IR light for the WiiMotes) are being run on Arduino and the WiiMote interfacing, scoreing, sounds and 
 arduino hookup are being handled in Python.
-
 
 
 Requires:
