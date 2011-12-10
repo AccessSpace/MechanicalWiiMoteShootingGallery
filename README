@@ -1,20 +1,41 @@
-We are making a shooting gallery for use at a christmas faire.
+MechanicalWiiMoteShootingGallery
+Trash Tech Shooting Game
 
-this is an access-space.org project
+This code is part of an Access-Space.org game which is made from:-
+  Reclaimed Wood
+  Motors and transistors from old printers
+  LEDs and Metal from old PCs
+  Reclaimed Network Cable
+  An Open Hardware Arduino microcontroller
+  A reused Computer with a Free Software operating system
+  Creative Commons music from Jamendo
+  Creative Commons sound samples from FreeSound
+  Python and Arduino Free Sofware programing languages
+  Pygame, cwiid, python-firmata and firmata libraries
+  A Bluetooth Dongle
+  A Nintendo Wiimote, nunchuck and plastic gun shape
+  This code
+  
+This code can be got from github.com/AccessSpace/MechanicalWiiMoteShootingGallery/
 
-The structure will be made from recovered 2x2 wood. The Mechanics and lighting (including 
-the IR light for the WiiMotes) are being run on Arduino and the WiiMote interfacing, scoreing, sounds and 
-arduino hookup are being handled in Python.
 
-
-Requires:
+Dependencies:
   https://github.com/lupeke/python-firmata
+  http://abstrakraft.org/cwiid/
+  http://pygame.org/
   Arduino loaded with the example sketch 'Firmata -> OldStandardFirmata' on /dev/ttyUSB0
   Hardware specs and wiring diagram to come
-  
 
-The sounds are all off freesound
+The sounds are all from the freesound project and are licensed under Creative Commons CA so we can use them
 
+Downloaded on December 9th, 2011
+     S: game_over.wav by Corsica_S -- http://www.freesound.org/people/Corsica_S/sounds/72866/
+Downloaded on December 8th, 2011
+     P: Voice Countdown by mad-monkey -- http://www.freesound.org/people/mad-monkey/packs/4305/
+Downloaded on December 7th, 2011
+     S: SantaHoHoHo2.wav by Jaqvaar -- http://www.freesound.org/people/Jaqvaar/sounds/110697/
+     S: jinglebells2.wav by NoiseCollector -- http://www.freesound.org/people/NoiseCollector/sounds/111350/
+     S: turkeygobble1.wav by sinatra314 -- http://www.freesound.org/people/sinatra314/sounds/67675/
 Downloaded on November 23rd, 2011
      S: sigh.wav by the_justin -- http://www.freesound.org/people/the_justin/sounds/9891/
      S: Crowd_cheering_football_01.wav by wanna73 -- http://www.freesound.org/people/wanna73/sounds/20784/
@@ -23,3 +44,6 @@ Downloaded on November 22nd, 2011
      S: 01788 cartoon iha.wav by Robinhood76 -- http://www.freesound.org/people/Robinhood76/sounds/98296/
      S: ShipsBell.wav by acclivity -- http://www.freesound.org/people/acclivity/sounds/32304/
      S: 45 Smith & Wesson.wav by Tito Lahaye -- http://www.freesound.org/people/Tito%20Lahaye/sounds/84254/
+     
+Witing music 
+Christmas Songs by Adrian Charkman CC by-nc-sa  http://www.jamendo.com/en/album/35531
