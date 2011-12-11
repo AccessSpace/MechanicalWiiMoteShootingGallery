@@ -18,6 +18,7 @@ This code is part of an Access-Space.org game which is made from:-
   
 This code can be got from github.com/AccessSpace/MechanicalWiiMoteShootingGallery/
 
+ShootgameCtrl.svg is a shematic for the driver board needed, we made this out of reclaimed transistors.
 
 Dependencies:
   https://github.com/lupeke/python-firmata
