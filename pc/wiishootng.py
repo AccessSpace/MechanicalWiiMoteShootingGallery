@@ -11,21 +11,20 @@ import time
 from firmata import * 
 
 #theme        = 'christmas'
-theme        ='steampunk'
+theme        = 'steampunk'
 
 xmargin      = 50
 ymargin      = 90
-bullet_delay  = datetime.timedelta(0, 0.25)
-shake_delay   = datetime.timedelta(0, 1)
-recoil_delay  = datetime.timedelta(0, 0.2)
-ready_delay   = datetime.timedelta(0, 0.5)
-changetarget_delay = datetime.timedelta(0, 3)
-miss_delay   = datetime.timedelta(0, 1)
-
+bullet_delay  = datetime.timedelta(0, 0.5)
+shake_delay   = datetime.timedelta(0, 2)
+effect_delay   = datetime.timedelta(0, 0.25)
+recoil_delay  = datetime.timedelta(0, 0.5)
+ready_delay   = datetime.timedelta(0, 1)
+changetarget_delay = datetime.timedelta(0, 4)
 
 maxshots     = 10
 maxpoints    = 10
-maxtime      = datetime.timedelta(0, 60)
+maxtime      = datetime.timedelta(0, 120)
 skillramp    = 6
 
 MOTORpins    = [2, 4, 6]
@@ -85,7 +84,7 @@ if(theme == 'steampunk'):
                     pygame.mixer.Sound('themes/steampunk/sounds/french_01P.wav')]
     
     HitNoises = [pygame.mixer.Sound('themes/steampunk/sounds/65474__robinhood76__00682-farting-flying-baloon-3.wav'),                  
-                    pygame.mixer.Sound('themes/steampunk/sounds/moustach_02P.wav'),
+                    pygame.mixer.Sound('themes/steampunk/sounds/moustach_02.0P.wav'),
                     pygame.mixer.Sound('themes/steampunk/sounds/french_02P.wav')]
     
 
@@ -115,19 +114,9 @@ w.rpt_mode = cwiid.RPT_BTN | cwiid.RPT_IR | cwiid.RPT_EXT | cwiid.RPT_ACC
 
 # Turn on LED1 so we know we're connected.
 
-#Test the wiimote stuff
-#If nunchuk is active then dump the values.
-if not w.state.has_key('nunchuk'):
-    print "No nunchuk."
-
-if w.state.has_key('ir_src'):            
-    if w.state['ir_src'][0] is not None:
-        if w.state['ir_src'][0].has_key('pos'):
-            print "found IR point"
-
-
 print 'Connected Thanks...'
 waitingnoise.set_volume(0.6)
+plays = 0
 
 while 1: #infintite games
 
@@ -201,19 +190,24 @@ while 1: #infintite games
         while len(aEvents) > 0:
             oEvent = aEvents.pop()
             if currenttime >= oEvent["time"]:
-                print oEvent, "time", oEvent["time"], "current", currenttime
+                #print oEvent, "time", oEvent["time"], "current", currenttime
                 
                 if oEvent["name"] == "hit":
-                    HitNoises[target].play()
+                    hit.play()
                     arduino.digital_write(MOTORpins[target], firmata.HIGH)
-                    print "pin high", MOTORpins[target]
+                    #print "pin high", MOTORpins[target]
                     points = points + 1
+                    aNewEvents.append({"name":'effect', "time":currenttime + effect_delay})
                     aNewEvents.append({"name":'hit_end', "time":currenttime + shake_delay})
-                    aNewEvents.append({"name":'changetarget', "time":currenttime + changetarget_delay})
                     
+                if oEvent["name"] == "effect":
+                    HitNoises[target].play()
+                    aNewEvents.append({"name":'changetarget', "time":currenttime + changetarget_delay})
+                
+                
                 if oEvent["name"] == "hit_end":
                     arduino.digital_write(MOTORpins[target], firmata.LOW)
-                    print "pin low", MOTORpins[target]
+                    #print "pin low", MOTORpins[target]
                     
                 if oEvent["name"] == "recoilend":
                     w.rumble = 0
@@ -227,7 +221,7 @@ while 1: #infintite games
                     while lasttarget == target:
                         target = random.randint(0, targets - 1)
                     
-                    print 'new target', target
+                    #print 'new target', target
                     
                     for v in LEDpins:
                         arduino.digital_write(v, firmata.LOW)
@@ -235,7 +229,7 @@ while 1: #infintite games
                         arduino.digital_write(v, firmata.LOW)
 
                     arduino.digital_write(LEDpins[target], firmata.HIGH)
-                    print 'pin high', LEDpins[target]
+                    #print 'pin high', LEDpins[target]
                                 
                     TargetNoises[target].play()
                     lasttarget = target
@@ -285,14 +279,14 @@ while 1: #infintite games
             
             if (points == 0)  and  (shots > (maxshots - skillramp)):
                 skill = 1 + (1 * (shots - (maxshots - skillramp)))
-                print 'skill changed to {0}'.format(skill)
+                #print 'skill changed to {0}'.format(skill)
             
     
     w.rumble = 0
-    print 'Scored {0} out of {1} shots at skill {2}'.format(points, shots, skill)
+    plays = plays + 1
+    print "Play", plays, 'Scored {0} out of {1} shots at skill {2}'.format(points, shots, skill)
     arduino.digital_write(LEDpins[target], firmata.LOW)
-    print "pin low", LEDpins[target]
-    
+    #print "pin low", LEDpins[target]
     gameover.play()
     sleep( 2 )
     
